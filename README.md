@@ -213,3 +213,9 @@ MVP считается готовым, когда:
 - `docs/plan.md` — план разработки по этапам с чекбоксами (обновляется по ходу работы).
 - `docs/memory.md` — журнал: что сделано, ключевые решения, следующие шаги, ловушки.
 
+Интеграция MCP и проверка UI (`e2e/`, `.agents/mcp_config.json`, `.mcp.json`):
+- **MCP-сервер:** настроен Chrome DevTools MCP (`chrome-devtools-mcp`) для управления браузером, инспекции DOM и снятия метрик.
+- **E2E-тестирование UI:** тесты веб-интерфейса ([`docs/calculator.html`](docs/calculator.html)) реализованы в [`e2e/tests/calculator.e2e.test.js`](e2e/tests/calculator.e2e.test.js).
+- **Сценарии и проверки:** автоматизированный прогон цепочки вычислений, захват реального скриншота ([`e2e/test-results/calculator-e2e-screenshot.png`](e2e/test-results/calculator-e2e-screenshot.png)) и валидация 0 ошибок консоли браузера.
+- **Запуск:** `npm --prefix e2e test` (10/10 зелёных проверок).
+

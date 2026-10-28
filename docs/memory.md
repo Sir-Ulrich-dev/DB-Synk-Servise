@@ -20,6 +20,12 @@
 - [x] Создан `docs/plan.md` (план с чекбоксами) и `docs/memory.md` (журнал).
 - [x] Создан `docs/plan.md` с планом разработки по этапам.
 - [x] Добавлен `.gitignore` (.claude/settings.local.json, .env).
+- [x] Отключен Playwright MCP, подключен Chrome DevTools MCP (`.mcp.json`, `.agents/mcp_config.json`).
+- [x] Выполнена проверка UI `docs/calculator.html` через Chrome DevTools Protocol (`e2e/tests/calculator.e2e.test.js`):
+  - Пользовательский сценарий вычислений (12+8=20, 20*3=60, AC, 7/0=Ошибка).
+  - Реальный снимок экрана (`e2e/test-results/calculator-e2e-screenshot.png`).
+  - Проверка консоли браузера (0 ошибок/исключений).
+  - 10/10 зелёных E2E-тестов.
 
 ## 🧠 Ключевые решения
 | Проблема | Решение |
