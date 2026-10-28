@@ -1,0 +1,12 @@
+{
+  "name": "db-sync-e2e",
+  "version": "1.0.0",
+  "description": "E2e tests for DB Sync Service UI",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

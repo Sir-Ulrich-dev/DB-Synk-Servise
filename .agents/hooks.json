@@ -1,0 +1,27 @@
+{
+  "hooks": [
+    {
+      "id": "lint-after-edit",
+      "description": "После редактирования Java-файла запускать Checkstyle для проверки стиля кода",
+      "event": "PostToolUse",
+      "tools": ["create_file", "edit_file", "replace_file_content", "multi_replace_file_content"],
+      "condition": {
+        "filePattern": "src/**/*.java"
+      },
+      "command": "./mvnw checkstyle:check --batch-mode -q 2>&1 | tail -20",
+      "onFailure": "warn",
+      "description_detail": "Если Checkstyle выявляет нарушения — агент получает предупреждение и должен их устранить до следующего коммита."
+    },
+    {
+      "id": "protect-sensitive-files",
+      "description": "Блокировать попытки записи в защищённые файлы (.env, .git/*, lock-файлы)",
+      "event": "PreToolUse",
+      "tools": ["create_file", "edit_file", "replace_file_content", "multi_replace_file_content", "write_to_file"],
+      "condition": {
+        "filePattern": "**/.env|**/.env.*|**/.git/**|**/package-lock.json|**/yarn.lock|**/pom.xml.bak"
+      },
+      "action": "block",
+      "message": "HOOK BLOCKED: Редактирование защищённого файла запрещено. Файлы .env, .git/* и lock-файлы не должны изменяться агентом без явного разрешения пользователя."
+    }
+  ]
+}

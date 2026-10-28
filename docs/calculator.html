@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DB Sync — Калькулятор</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 28px;
+      width: 320px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    .display {
+      background: rgba(0,0,0,0.35);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    #expression {
+      color: rgba(255,255,255,0.45);
+      font-size: 13px;
+      min-height: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    #result {
+      color: #fff;
+      font-size: 40px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      word-break: break-all;
+      min-height: 50px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      height: 62px;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+      outline: none;
+    }
+
+    button:active { transform: scale(0.93); }
+
+    .btn-digit {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .btn-digit:hover { background: rgba(255,255,255,0.18); }
+
+    .btn-op {
+      background: rgba(123, 97, 255, 0.35);
+      color: #c8baff;
+    }
+    .btn-op:hover { background: rgba(123, 97, 255, 0.55); }
+
+    .btn-eq {
+      background: linear-gradient(135deg, #7b61ff, #5b4fcf);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(123,97,255,0.4);
+    }
+    .btn-eq:hover { box-shadow: 0 6px 28px rgba(123,97,255,0.6); }
+
+    .btn-clear {
+      background: rgba(255, 90, 90, 0.25);
+      color: #ff9a9a;
+    }
+    .btn-clear:hover { background: rgba(255, 90, 90, 0.4); }
+
+    .btn-zero { grid-column: span 2; }
+  </style>
+</head>
+<body>
+  <div class="calculator" id="calculator">
+    <div class="display">
+      <div id="expression"></div>
+      <div id="result">0</div>
+    </div>
+    <div class="buttons">
+      <button id="btn-clear"  class="btn-clear" data-action="clear">AC</button>
+      <button id="btn-sign"   class="btn-op"    data-action="sign">+/−</button>
+      <button id="btn-pct"    class="btn-op"    data-action="percent">%</button>
+      <button id="btn-div"    class="btn-op"    data-action="op" data-value="/">÷</button>
+
+      <button id="btn-7"      class="btn-digit" data-action="digit" data-value="7">7</button>
+      <button id="btn-8"      class="btn-digit" data-action="digit" data-value="8">8</button>
+      <button id="btn-9"      class="btn-digit" data-action="digit" data-value="9">9</button>
+      <button id="btn-mul"    class="btn-op"    data-action="op" data-value="*">×</button>
+
+      <button id="btn-4"      class="btn-digit" data-action="digit" data-value="4">4</button>
+      <button id="btn-5"      class="btn-digit" data-action="digit" data-value="5">5</button>
+      <button id="btn-6"      class="btn-digit" data-action="digit" data-value="6">6</button>
+      <button id="btn-sub"    class="btn-op"    data-action="op" data-value="-">−</button>
+
+      <button id="btn-1"      class="btn-digit" data-action="digit" data-value="1">1</button>
+      <button id="btn-2"      class="btn-digit" data-action="digit" data-value="2">2</button>
+      <button id="btn-3"      class="btn-digit" data-action="digit" data-value="3">3</button>
+      <button id="btn-add"    class="btn-op"    data-action="op" data-value="+">+</button>
+
+      <button id="btn-0"      class="btn-digit btn-zero" data-action="digit" data-value="0">0</button>
+      <button id="btn-dot"    class="btn-digit" data-action="dot">.</button>
+      <button id="btn-eq"     class="btn-eq"    data-action="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    const resultEl = document.getElementById('result');
+    const exprEl   = document.getElementById('expression');
+
+    let current = '0';
+    let operator = null;
+    let previous = null;
+    let justEvaled = false;
+
+    function updateDisplay(expr) {
+      resultEl.textContent = current;
+      exprEl.textContent = expr || '';
+    }
+
+    function handleDigit(v) {
+      if (justEvaled) { current = v; justEvaled = false; }
+      else current = current === '0' ? v : current + v;
+      updateDisplay();
+    }
+
+    function handleDot() {
+      if (!current.includes('.')) current += '.';
+      updateDisplay();
+    }
+
+    function handleOp(op) {
+      if (previous !== null && !justEvaled) calculate();
+      previous = parseFloat(current);
+      operator = op;
+      const opLabel = {'+':`+`,'−':'−','−':'-','-':'-','*':'×','/':'÷'}[op] || op;
+      updateDisplay(`${previous} ${opLabel}`);
+      justEvaled = true;
+    }
+
+    function calculate() {
+      if (previous === null || operator === null) return;
+      const a = previous, b = parseFloat(current);
+      const expr = `${a} ${{'+':'+','-':'−','*':'×','/':'÷'}[operator] || operator} ${b} =`;
+      let res;
+      switch (operator) {
+        case '+': res = a + b; break;
+        case '-': res = a - b; break;
+        case '*': res = a * b; break;
+        case '/': res = b === 0 ? 'Ошибка' : a / b; break;
+      }
+      current = res === 'Ошибка' ? 'Ошибка' : String(parseFloat(res.toFixed(10)));
+      operator = null; previous = null; justEvaled = true;
+      updateDisplay(expr);
+    }
+
+    function handleClear() {
+      current = '0'; operator = null; previous = null; justEvaled = false;
+      updateDisplay('');
+    }
+
+    function handleSign() {
+      current = String(-parseFloat(current)); updateDisplay();
+    }
+
+    function handlePercent() {
+      current = String(parseFloat(current) / 100); updateDisplay();
+    }
+
+    document.querySelector('.buttons').addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const {action, value} = btn.dataset;
+      if (action === 'digit')   handleDigit(value);
+      if (action === 'dot')     handleDot();
+      if (action === 'op')      handleOp(value);
+      if (action === 'equals')  calculate();
+      if (action === 'clear')   handleClear();
+      if (action === 'sign')    handleSign();
+      if (action === 'percent') handlePercent();
+    });
+  </script>
+</body>
+</html>
