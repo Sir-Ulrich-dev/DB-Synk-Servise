@@ -29,3 +29,6 @@ e2e/package-lock.json
 node_modules/
 src/main/frontend/generated/
 src/main/bundles/
+
+# Метрики качества (crapper/dryer/mutator)
+.metrics/

@@ -55,3 +55,8 @@
 - `.env` не создан; переменные `ORACLE_URL`, `POSTGRES_*` лежат в `.claude/settings.local.json` (пустые, не коммитятся).
 - Не закоммичено на конец сессии: каркас (`pom.xml`, `src/`, `mvnw`, `.mvn/`, `config/`) и правки docs — перед работой проверить `git status`.
 - Нужные скрины для `docs/about.md` (раздел 6): hook-lint, path-rule (repository и соседняя папка), memory-continue.
+- Метрики качества (`ub-mode`): `crapper`, `dryer`, `mutator` лежат в `~/Projects/` (нужен `python3.14-venv`, первый запуск сам создаёт `.venv`). `mvn` в системе нет — только `./mvnw`, поэтому команды такие (из корня проекта, всегда `-s src/main/java`, иначе сканируется сгенерированный Vaadin-код):
+  - `~/Projects/crapper/crapper -s src/main/java --coverage-command "./mvnw -q org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report"`
+  - `~/Projects/dryer/dryer src/main/java`
+  - `~/Projects/mutator/mutator -s src/main/java --reuse-coverage --test-command "./mvnw -q test"` (запускать после `crapper`: берёт покрытие и имена функций из `.metrics/crap.edn`)
+  - Результаты пишутся в `.metrics/` (в `.gitignore`). Пробный прогон на каркасе: одна функция `main`, CRAP 2.0, мутаций нет.
