@@ -10,8 +10,10 @@ if [ ! -x ./mvnw ]; then
   echo "lint-after-edit: ./mvnw отсутствует (каркас Maven ещё не создан), Checkstyle пропущен" >&2
   exit 0
 fi
-out=$(./mvnw checkstyle:check --batch-mode -q 2>&1 | tail -20)
-if [ $? -ne 0 ] || echo "$out" | grep -q "ERROR"; then
+full=$(./mvnw checkstyle:check --batch-mode 2>&1)
+status=$?
+out=$(echo "$full" | grep -E "^\[WARN(ING)?\]|^\[ERROR\] .*Checkstyle" | head -20)
+if [ "$status" -ne 0 ]; then
   echo "Checkstyle выявил нарушения, устраните их до коммита:" >&2
   echo "$out" >&2
   exit 2

@@ -16,14 +16,14 @@
 ---
 
 ## Этап 1. Каркас приложения
-- [ ] Создать проект Spring Boot с Vaadin Flow в корне репозитория.
-- [ ] Настроить `pom.xml`: Java 21, Spring Boot 3.x, Vaadin 24.x, Spring JDBC, JUnit 5, Mockito, Checkstyle.
-- [ ] Настроить Maven Wrapper (`./mvnw`).
+- [x] Создать проект Spring Boot с Vaadin Flow в корне репозитория.
+- [x] Настроить `pom.xml`: Java 21, Spring Boot 4.1.2, Vaadin 25.3.4, Spring JDBC, JUnit 5, Mockito, Checkstyle.
+- [x] Настроить Maven Wrapper (`./mvnw`).
 - [ ] Создать `application.yml` без секретов (переменные окружения через `${VAR}`).
 - [ ] Создать стартовую страницу административной панели (`MainView.java` на Vaadin).
-- [ ] Настроить Checkstyle (`.checkstyle.xml` или ссылка на стандартный Google Style).
-- [ ] Проверить: `./mvnw clean install` → сборка без ошибок.
-- [ ] Проверить: `./mvnw test` → тесты зелёные.
+- [x] Настроить Checkstyle (`config/checkstyle.xml`).
+- [x] Проверить: `./mvnw clean install` → сборка без ошибок.
+- [x] Проверить: `./mvnw test` → тесты зелёные.
 
 ---
 

@@ -36,12 +36,14 @@ Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapp
 ## 5. E2E
 `npm --prefix e2e test` — 10/10 зелёных, 0 ошибок консоли. Лог: [evidence/e2e-run.txt](evidence/e2e-run.txt), скрин: ![e2e](screenshots/e2e-green.png)
 
-## 6. Скрины из живой сессии (нужно приложить)
-Их нельзя сгенерировать файлами — они снимаются в интерактивной сессии Claude Code. Положить в `docs/screenshots/`:
+## 6. Скрины
+Просьба «допиши в .env» → `HOOK BLOCKED`
+![img.png](screenshots/hookblocked.png)
+Работа линтера
+![Linter.png](screenshots/Linter.png)
 
 | Файл | Что показать |
 |---|---|
-| `hook-env-block.png` | Просьба «допиши в .env» → `HOOK BLOCKED` |
 | `hook-lint.png` | Правка `.java` → вывод Checkstyle (после появления `mvnw`) |
 | `path-rule-repository.png` | Задача в `repository/` — правило применено |
 | `path-rule-other.png` | Задача в соседней папке — правило не применено |
