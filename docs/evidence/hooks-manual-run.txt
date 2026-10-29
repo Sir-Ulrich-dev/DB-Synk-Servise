@@ -1,0 +1,21 @@
+$ echo {Write .env} | protect-sensitive-files.sh
+HOOK BLOCKED: редактирование защищённого файла запрещено (/home/bur/Projects/DB-Synk-Servise/.env). Файлы .env, .git/* и lock-файлы не должны изменяться агентом без явного разрешения пользователя.
+exit=2
+
+$ ... file_path=src/main/java/com/dbsync/Foo.java
+exit=0
+
+$ echo {Edit Foo.java} | lint-after-edit.sh
+lint-after-edit: ./mvnw отсутствует (каркас Maven ещё не создан), Checkstyle пропущен
+exit=0
+$ lint-after-edit.sh (файл с нарушениями)
+Checkstyle выявил нарушения, устраните их до коммита:
+[WARNING] Could not transfer metadata /.meta/prefixes.txt from/to jvnet-nexus-releases (https://maven.java.net/content/repositories/releases/): (certificate_expired) PKIX
+[WARN] /home/bur/Projects/DB-Synk-Servise/src/main/java/com/dbsync/TmpBad.java:3:17: Избегайте использование '.*' в import - java.util.*. [AvoidStarImport]
+[WARN] /home/bur/Projects/DB-Synk-Servise/src/main/java/com/dbsync/TmpBad.java:6:1: Строка содержит символ табуляции. [FileTabCharacter]
+[WARN] /home/bur/Projects/DB-Synk-Servise/src/main/java/com/dbsync/TmpBad.java:6:20: В конструкции 'if' должны использоваться '{}'. [NeedBraces]
+[WARNING] src/main/java/com/dbsync/TmpBad.java:[3,17] (imports) AvoidStarImport: Избегайте использование '.*' в import - java.util.*.
+[WARNING] src/main/java/com/dbsync/TmpBad.java:[6,1] (whitespace) FileTabCharacter: Строка содержит символ табуляции.
+[WARNING] src/main/java/com/dbsync/TmpBad.java:[6,20] (blocks) NeedBraces: В конструкции 'if' должны использоваться '{}'.
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:3.6.0:check (default-cli) on project db-sync-service: You have 3 Checkstyle violations. ->
+exit=2

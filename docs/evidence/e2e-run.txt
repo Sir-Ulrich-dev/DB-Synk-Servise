@@ -1,0 +1,40 @@
+
+> db-sync-e2e@1.0.0 test
+> node tests/calculator.e2e.test.js
+
+=== Starting E2E UI Tests for calculator.html via Chrome DevTools ===
+Chrome binary: /usr/bin/google-chrome
+Target URL: file:///home/bur/Projects/DB-Synk-Servise/docs/calculator.html
+Connected to page target: DB Sync — Калькулятор (ws://127.0.0.1:9333/devtools/page/676CA12F417B95A7D500F18B6B5DC787)
+
+--- Test Scenario 1: Initial Page State ---
+  ✔ PASS: Page title is correct (actual: "DB Sync — Калькулятор")
+  ✔ PASS: Initial calculator result is 0 (actual: "0")
+
+--- Test Scenario 2: Arithmetic (12 + 8 = 20) ---
+  ✔ PASS: 12 + 8 equals 20 (actual: "20")
+  ✔ PASS: Expression displays "12 + 8 =" (actual: "12 + 8 =")
+
+--- Test Scenario 3: Screenshot Capture ---
+  ✔ Screenshot saved to: /home/bur/Projects/DB-Synk-Servise/e2e/test-results/calculator-e2e-screenshot.png
+
+--- Test Scenario 4: Chained Operation (20 * 3 = 60) ---
+  ✔ PASS: 20 * 3 equals 60 (actual: "60")
+
+--- Test Scenario 5: Clear (AC) ---
+  ✔ PASS: Result reset to 0 after AC (actual: "0")
+  ✔ PASS: Expression cleared after AC (actual: "")
+
+--- Test Scenario 6: Division by Zero ---
+  ✔ PASS: 7 / 0 produces "Ошибка" (actual: "Ошибка")
+
+--- Test Scenario 7: Console Errors Inspection ---
+  Total console messages captured: 0
+  ✔ PASS: Console has 0 errors/exceptions
+
+========================================
+ALL E2E TESTS PASSED: 10/10 GREEN
+Screenshot: /home/bur/Projects/DB-Synk-Servise/e2e/test-results/calculator-e2e-screenshot.png
+Console errors: 0
+========================================
+

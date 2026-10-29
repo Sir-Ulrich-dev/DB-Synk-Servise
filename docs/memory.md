@@ -4,7 +4,7 @@
 
 ---
 
-## 📅 Последнее обновление: 2026-10-28
+## 📅 Последнее обновление: 2026-10-29
 
 ## ✅ Сделано
 - [x] Создан README.md с описанием цели проекта и технического стека.
@@ -27,21 +27,31 @@
   - Проверка консоли браузера (0 ошибок/исключений).
   - 10/10 зелёных E2E-тестов.
 
+- [x] Каркас Spring Boot 4.1.2 + Vaadin 25.3.4 + Spring JDBC (Java 21, Liberica JDK), `mvnw`, Checkstyle (`config/checkstyle.xml`).
+- [x] `./mvnw clean install` → BUILD SUCCESS (1 тест), `./mvnw checkstyle:check` → 0 нарушений.
+- [x] Hooks переведены в формат Claude Code (`.claude/settings.json` + `.claude/hooks/`), проверены вручную и в сессии (блок `.env`).
+
 ## 🧠 Ключевые решения
 | Проблема | Решение |
 |---|---|
 | Git commit без user.name/email | `git config user.name/email` применён локально в репозитории |
 | Удаление ветки на GitHub без сети | `git branch -d -r` удалил отслеживаемую ветку локально; для GitHub — `git push origin --delete` |
+| Версии стека | start.spring.io отдаёт только Boot 4.x → Vaadin 25 (не Boot 3 + Vaadin 24, как планировалось) |
+| Версия Boot в pom | В Maven Central `4.1.2`, а не `4.1.2.RELEASE` (так её называет start.spring.io) |
+| DataSource на Этапе 1 | Автоконфигурация `DataSourceAutoConfiguration` отключена в `application.properties`; подключения — Этап 2 через env |
 | Структура пакетов | Стандарт Spring Boot: `config`, `ui`, `service`, `sync`, `repository`, `model`, `scheduler`, `exception` |
 
 ## ⏭ Дальше (следующие шаги)
-- [ ] Шаг 5 (Этап 0→1): Создать каркас Spring Boot + Vaadin Flow проекта.
-- [ ] Настроить `pom.xml` с зависимостями Java 21, Spring Boot, Vaadin Flow, Spring JDBC, JUnit 5, Checkstyle.
-- [ ] Настроить `application.yml` (без секретов, через переменные окружения).
-- [ ] Создать `MainView.java` на Vaadin Flow — стартовая страница административной панели.
-- [ ] Проверить: `./mvnw clean install` → зелёный.
+- [ ] Создать `MainView.java` на Vaadin Flow — стартовая страница админ-панели.
+- [ ] Проверить `./mvnw spring-boot:run` (запуск приложения).
+- [ ] Этап 2: `DataSourceConfig`, `ConnectionValidationService` + тесты (Oracle недоступен — только через профили/моки).
 
 ## ⚠️ Ловушки
 - На текущей машине нет прямого сетевого доступа к github.com из sandbox — `git push` требует bypass.
 - Реальных DataSource нет — подключения к Oracle и PostgreSQL должны быть отделены от бизнес-логики через профили Spring.
-- `pom.xml` должен фиксировать совместимые версии Vaadin + Spring Boot + Java 21 (Vaadin 24.x + Spring Boot 3.x).
+- Версии в `pom.xml` зафиксированы: Spring Boot 4.1.2 + Vaadin 25.3.4 + Java 21. Не менять без согласования.
+- JDK — Liberica 21 в `/usr/lib/jvm/bellsoft-java21-amd64`; если `./mvnw` не находит Java, задать `JAVA_HOME` на этот путь.
+- Hooks читаются при старте сессии: после правки `.claude/settings.json` нужен перезапуск. Запись в `.env` блокируется намеренно.
+- `.env` не создан; переменные `ORACLE_URL`, `POSTGRES_*` лежат в `.claude/settings.local.json` (пустые, не коммитятся).
+- Не закоммичено на конец сессии: каркас (`pom.xml`, `src/`, `mvnw`, `.mvn/`, `config/`) и правки docs — перед работой проверить `git status`.
+- Нужные скрины для `docs/about.md` (раздел 6): hook-lint, path-rule (repository и соседняя папка), memory-continue.

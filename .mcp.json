@@ -8,6 +8,16 @@
         "chrome-devtools-mcp"
       ],
       "env": {}
+    },
+    "trail": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@trailhq/trail-code",
+        "mcp"
+      ],
+      "env": {}
     }
   }
 }
