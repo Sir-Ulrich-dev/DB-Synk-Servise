@@ -10,7 +10,7 @@ Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapp
 | Права (allow / ask / deny), режим | `.claude/settings.json` |
 | Hooks (реальный формат Claude Code) | `.claude/settings.json` → `hooks`, скрипты в `.claude/hooks/` |
 | Правило по пути | `.agents/rules/repository-rules.md` (в Claude Code доступно через симлинк `.claude/rules`) |
-| Навыки | `.agents/skills/` |
+| Навыки | `.agents/skills/` (в Claude Code доступны через симлинк `.claude/skills`) |
 | MCP | `.mcp.json` (Chrome DevTools, Trail) |
 | Карта кода и заметки команды | Trail: `.trail/` (граф в `.trail/cache/`, заметки в `.trail/learnings/`), секция в `AGENTS.md` |
 | Память между сессиями | `docs/plan.md`, `docs/memory.md` |
@@ -29,11 +29,11 @@ Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapp
 Дополнительно [Trail-Code](https://github.com/trailhq/Trail-Code) (`trail init --no-global`) добавил хуки в `.claude/settings.json` (SessionStart) и `.claude/settings.local.json` (prompt, pre/post-edit, pre-bash, stop, statusline) — они не заменяют проектные хуки выше. Глобальные файлы в `~/.claude` не менялись.
 
 Проверка скриптов вручную (реальный вывод): [evidence/hooks-manual-run.txt](evidence/hooks-manual-run.txt) — запись в `.env` блокируется (exit=2), обычный `.java` пропускается, при отсутствии `mvnw` линтер честно сообщает о пропуске.
-Срабатывание хука **внутри сессии Claude Code** — скрин `screenshots/hook-env-block.png` (см. раздел 6).
+Срабатывание хука **внутри сессии Claude Code** — скрин [hookblocked.png](screenshots/hookblocked.png) (раздел 6).
 
 ## 4. Path-правило
 `repository-rules.md` имеет frontmatter `paths: **/repository/**, **/dao/**, **/*Repository*.java` и подгружается только при работе с файлами этих путей.
-Сценарий проверки (выполняется в сессии, результат — скрины из раздела 6):
+Сценарий проверки (выполняется в сессии). **Статус: результаты ещё не получены** — скрины задачи в `repository/` и в соседней папке будут добавлены в раздел 6 после прогона в живой сессии:
 1. Задача в `src/main/java/com/dbsync/repository/…` → агент должен сослаться на правила (параметризованный SQL, запрет DDL, `batchUpdate`).
 2. Та же по типу задача в соседней папке (`…/service/…`) → правило не должно применяться.
 
@@ -45,11 +45,5 @@ Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapp
 ![img.png](screenshots/hookblocked.png)
 Работа линтера
 ![Linter.png](screenshots/Linter.png)
-
-| Файл | Что показать |
-|---|---|
-| `hook-lint.png` | Правка `.java` → вывод Checkstyle (после появления `mvnw`) |
-| `path-rule-repository.png` | Задача в `repository/` — правило применено |
-| `path-rule-other.png` | Задача в соседней папке — правило не применено |
-| `memory-continue.png` | Новая сессия продолжает по `docs/memory.md` |
-| `e2e-green.png` | ✔ уже есть |
+Память проекта
+![memory.png](screenshots/memory.png)
