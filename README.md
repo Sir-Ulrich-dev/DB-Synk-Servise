@@ -198,7 +198,7 @@ MVP считается готовым, когда:
 
 Личные настройки разработчика хранятся в `.claude/settings.local.json` и добавлены в `.gitignore` — в репозиторий не попадают.
 
-Автоматические проверки (`.agents/hooks.json`):
+Автоматические проверки (`.claude/settings.json` → `hooks`, скрипты в `.claude/hooks/`; исходное описание — `.agents/hooks.json`):
 - `lint-after-edit`: после редактирования Java-файла автоматически запускается `./mvnw checkstyle:check`.
 - `protect-sensitive-files`: блокирует попытки агента записать изменения в `.env`, `.git/*`, `*lock.json`.
 
@@ -219,3 +219,14 @@ MVP считается готовым, когда:
 - **Сценарии и проверки:** автоматизированный прогон цепочки вычислений, захват реального скриншота ([`e2e/test-results/calculator-e2e-screenshot.png`](e2e/test-results/calculator-e2e-screenshot.png)) и валидация 0 ошибок консоли браузера.
 - **Запуск:** `npm --prefix e2e test` (10/10 зелёных проверок).
 
+13. Как агент работает в проекте
+
+1. Старт сессии: агент читает `AGENTS.md` и `docs/memory.md`, сверяется с `docs/plan.md` и продолжает с раздела «Дальше».
+2. Перед правкой: PreToolUse-хук блокирует запись в `.env`, `.git/*`, lock-файлы; права берутся из `.claude/settings.json` (`git push` — только с подтверждением).
+3. При работе со слоем `repository`/`dao` подгружается правило `.claude/rules/repository-rules.md` (через `paths`); в остальных папках оно не активно.
+4. После правки `src/**/*.java`: PostToolUse-хук запускает Checkstyle, нарушения возвращаются агенту.
+5. Бизнес-логика меняется через навык `write-tests`; перед слиянием — `review-pr`.
+6. UI проверяется через Chrome DevTools MCP и `npm --prefix e2e test`.
+7. Конец сессии: агент обновляет `docs/memory.md` и `docs/plan.md`.
+
+Полный отчёт с доказательствами: [docs/about.md](docs/about.md).

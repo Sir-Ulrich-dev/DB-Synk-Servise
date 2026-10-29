@@ -1,0 +1,10 @@
+$ echo {Write .env} | protect-sensitive-files.sh
+HOOK BLOCKED: редактирование защищённого файла запрещено (/home/bur/Projects/DB-Synk-Servise/.env). Файлы .env, .git/* и lock-файлы не должны изменяться агентом без явного разрешения пользователя.
+exit=2
+
+$ ... file_path=src/main/java/com/dbsync/Foo.java
+exit=0
+
+$ echo {Edit Foo.java} | lint-after-edit.sh
+lint-after-edit: ./mvnw отсутствует (каркас Maven ещё не создан), Checkstyle пропущен
+exit=0
