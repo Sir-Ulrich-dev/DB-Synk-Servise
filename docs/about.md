@@ -2,7 +2,7 @@
 
 ## 1. Стек проекта
 Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapper, JUnit 5/Mockito, Checkstyle, Docker. Подробности — [README](../README.md) и [AGENTS.md](../AGENTS.md).
-Каркас приложения (`pom.xml`, `src/`) ещё не создан — это следующий шаг ([plan.md](plan.md)). Поэтому Checkstyle-хук пока пропускается, а UI-проверки выполняются на `docs/calculator.html`.
+Каркас приложения создан (Spring Boot 4.1.2, Vaadin 25.3.4, Java 21): `./mvnw test` и `./mvnw checkstyle:check` проходят без ошибок. Checkstyle-хук работает на `src/**/*.java`; UI-проверки агента по-прежнему выполняются на `docs/calculator.html`, пока нет `MainView` ([plan.md](plan.md), Этап 1).
 
 ## 2. Конфигурация агента
 | Что | Где |
@@ -11,18 +11,22 @@ Java 21, Spring Boot, Vaadin Flow, Spring JDBC, Oracle + PostgreSQL, Maven Wrapp
 | Hooks (реальный формат Claude Code) | `.claude/settings.json` → `hooks`, скрипты в `.claude/hooks/` |
 | Правило по пути | `.agents/rules/repository-rules.md` (в Claude Code доступно через симлинк `.claude/rules`) |
 | Навыки | `.agents/skills/` |
-| MCP | `.mcp.json` (Chrome DevTools) |
+| MCP | `.mcp.json` (Chrome DevTools, Trail) |
+| Карта кода и заметки команды | Trail: `.trail/` (граф в `.trail/cache/`, заметки в `.trail/learnings/`), секция в `AGENTS.md` |
 | Память между сессиями | `docs/plan.md`, `docs/memory.md` |
 
 ### Навыки
 - `write-tests` — агент вызывает сам при изменении бизнес-логики.
 - `review-pr` — вручную перед слиянием в `main`.
+- `tdd` — разработка через тесты (red → green → refactor), с `mocking.md` и `tests.md`.
 
 ## 3. Hooks
 | Хук | Событие | Действие |
 |---|---|---|
 | `protect-sensitive-files` | PreToolUse (Edit/Write/MultiEdit) | exit 2 при записи в `.env`, `.git/*`, lock-файлы |
 | `lint-after-edit` | PostToolUse (Edit/Write/MultiEdit) | `./mvnw checkstyle:check` для `src/**/*.java`; нарушения возвращаются агенту |
+
+Дополнительно [Trail-Code](https://github.com/trailhq/Trail-Code) (`trail init --no-global`) добавил хуки в `.claude/settings.json` (SessionStart) и `.claude/settings.local.json` (prompt, pre/post-edit, pre-bash, stop, statusline) — они не заменяют проектные хуки выше. Глобальные файлы в `~/.claude` не менялись.
 
 Проверка скриптов вручную (реальный вывод): [evidence/hooks-manual-run.txt](evidence/hooks-manual-run.txt) — запись в `.env` блокируется (exit=2), обычный `.java` пропускается, при отсутствии `mvnw` линтер честно сообщает о пропуске.
 Срабатывание хука **внутри сессии Claude Code** — скрин `screenshots/hook-env-block.png` (см. раздел 6).
